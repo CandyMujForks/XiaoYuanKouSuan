@@ -1,66 +1,54 @@
+import argparse
+import re
+import subprocess
+import sys
+import threading
+import time
+import tkinter as tk
+from functools import lru_cache
+from tkinter import messagebox
+
 from mitmproxy import http
 from mitmproxy.tools.main import mitmdump
-import re
-import threading
-import number_command
-import tkinter as tk
-from tkinter import messagebox
-import argparse
-import sys
-import time
-import subprocess
 
 # CONFIG
-is_dialog_shown = False
-ANSWER_COUNT = 30
-WAITING_TIME = 12.5
+is_game_ended = True
+WAITING_TIME = 12
+BASE_RESOLUTION = [1440, 2880]
+NEXT_BUTTON_COORDINATES = {
+    # 进行下一场所要点击的按钮位置
+    "next_1": [720, 2060],
+    "next_2": [1050, 2760],
+    "next_3": [950, 2420],
+}
 
-import getExerciseJs
-
-def request(flow: http.HTTPFlow) -> None:
-    pass
 
 def response(flow: http.HTTPFlow) -> None:
-
-    global is_dialog_shown
+    global is_game_ended
     url = flow.request.url
     print(f"Response: {flow.response.status_code} {url}")
 
-    if is_target_url(url):
-        handle_target_response(flow, url)
+    if "https://leo.fbcontent.cn/bh5/leo-web-oral-pk/exercise_" in url:
+        # 找到需要替换的js
+        responsetext = flow.response.text
+        print(f"匹配到指定的 URL: {url}")
+        funname = re.search(r"(?<=isRight:)[^,]*?\(.*?\).*?(?=\|)", responsetext).group()
+        flow.response.text = responsetext.replace(funname, f"{funname}||true")
+        threading.Thread(target=show_message_box, args=("过滤成功", f"函数 {funname} 替换成功!")).start()
+
     elif "https://xyks.yuanfudao.com/leo-game-pk/android/math/pk/match/v2?" in url:
-        if not is_dialog_shown:
-            is_dialog_shown = True
-            threading.Thread(target=gui_answer).start()
+        # 检测到匹配成功
+        is_game_ended = False
+        threading.Timer(interval=WAITING_TIME, function=answer_input).start()
 
-def is_target_url(url):
-    return re.search(r"leo\.fbcontent\.cn/bh5/leo-web-oral-pk/exercise_.*\.js", url)
+    elif "https://xyks.yuanfudao.com/bh5/leo-web-oral-pk/result" in url:
+        # 结束对战
+        is_game_ended = True
 
-def handle_target_response(flow, url):
-    print(f"匹配到指定的 URL: {url}")
-    responsetext = flow.response.text
-    funname = extract_function_name(responsetext)
+    if "https://xyks.yuanfudao.com/leo-star/android/exercise/rank/list" in url:
+        # 进入结算界面，并自动进行下一局
+        threading.Timer(interval=5, function=next_round).start()
 
-    if funname:
-        update_response_text(flow, responsetext, funname)
-    else:
-        print("未找到匹配的函数名，无法进行替换。")
-
-def extract_function_name(responsetext):
-    match = re.search(r"(?<=isRight:)[^,]*?\(.*?\).*?(?=\|)", responsetext)
-    return match.group() if match else None
-
-def update_response_text(flow, responsetext, funname):
-    print(f"找到函数名: {funname}")
-    updated_text = responsetext.replace(funname, f"{funname}||true")
-    flow.response.text = updated_text
-    
-    # 保存js到exercise.js
-    with open("exercise.js", "w", encoding="utf-8") as f:
-        f.write(updated_text)
-    
-    print(f"替换后的响应: {updated_text}")
-    threading.Thread(target=show_message_box, args=("过滤成功", f"函数 {funname} 替换成功!")).start()
 
 def show_message_box(title, message):
     root = tk.Tk()
@@ -68,69 +56,96 @@ def show_message_box(title, message):
     messagebox.showinfo(title, message)
     root.destroy()
 
-def answer_write(prepared_commands):
-    start_time = time.time()
-    # 一次性发送准备好的 ADB 命令
-    number_command.run_adb_command(prepared_commands)
-    end_time = time.time()
-    print(f"点击操作耗时: {end_time - start_time:.3f}秒")
 
-def gui_answer():
-    # 预先准备 ADB 命令
-    prepared_commands = number_command.prepare_tap_commands(".", ANSWER_COUNT)
+def answer_input():
+    global is_game_ended
+    current_resolution = get_device_resolution()
+    # adb点击作答
+    while True:
+        if not is_game_ended:
+            adb_command = f"input tap {current_resolution[0] * 0.5} {current_resolution[1] * 0.7} \n" * 15
+            subprocess.run(["adb", "shell"], input=adb_command, text=True)
+        else:
+            return
 
-    root = tk.Tk()
-    root.title("继续执行")
-    button = tk.Button(root, text="点击继续", command=lambda: answer_write(prepared_commands))
-    button.pack(pady=20)
 
-    # 设置定时器自动执行
-    threading.Timer(WAITING_TIME, auto_click_and_close, args=(root, prepared_commands)).start()
-    
-    root.mainloop()
+def next_round():
+    next_commands = [f"input tap {NEXT_BUTTON_COORDINATES['next_1'][0]} {NEXT_BUTTON_COORDINATES['next_1'][1]}",
+                     f"input tap {NEXT_BUTTON_COORDINATES['next_2'][0]} {NEXT_BUTTON_COORDINATES['next_2'][1]}",
+                     f"input tap {NEXT_BUTTON_COORDINATES['next_3'][0]} {NEXT_BUTTON_COORDINATES['next_3'][1]}"]
 
-def auto_click_and_close(root, prepared_commands):
-    answer_write(prepared_commands)
-    global is_dialog_shown
-    is_dialog_shown = False
-    root.destroy()
+    for i in range(next_commands.__len__()):
+        subprocess.run(["adb", "shell"], input=next_commands[i], text=True, stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE)
+        time.sleep(1)
+
 
 # 检查 adb 是否安装
 def check_adb_installed():
     try:
         result = subprocess.run(["adb", "devices"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if result.returncode != 0:
-            print(f"ADB 检查失败: {result.stderr}")
+            show_message_box("提示", "ADB 连接检查失败")
             sys.exit(1)
     except FileNotFoundError:
-        print("ADB 未找到，请先安装 ADB 工具。")
+        show_message_box("提示", "ADB 未找到，请先安装 ADB 工具。")
         sys.exit(1)
 
-# ADB 连接设备
+
+# ADB 无线调试连接设备
 def connect_adb_wireless(adb_ip):
     try:
         result = subprocess.run(["adb", "connect", adb_ip], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if "connected" not in result.stdout:
-            print(f"ADB 连接失败: {result.stderr}")
+            show_message_box("提示", f"ADB 连接失败: {result.stderr}")
             sys.exit(1)
-        print(f"已连接到 {adb_ip}")
+        # show_message_box("提示", f"已连接到 {adb_ip}")
+        print(f"ADB 已连接到 {adb_ip}")
     except subprocess.CalledProcessError as e:
-        print(f"ADB 连接错误: {e}")
+        show_message_box("提示", f"ADB 连接错误: {e}")
         sys.exit(1)
+
+
+# 检查 adb 是否已正常连接
+def check_adb_connected():
+    result = subprocess.run(["adb", "get-state"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if result.returncode != 0:
+        show_message_box("提示", f"ADB 连接错误\n{result.stderr}")
+        sys.exit(1)
+    else:
+        print("ADB 已成功连接！")
+
+
+@lru_cache
+def get_device_resolution():
+    # 获取设备的物理分辨率，并缓存
+    result = subprocess.run(["adb", "shell", "wm", "size"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    output = result.stdout
+    if "Physical size" in output:
+        resolution_str = output.split(":")[-1].strip()
+        width, height = map(int, resolution_str.split("x"))
+        print(f"设备分辨率为: {width}x{height}")
+        return width, height
+    else:
+        raise Exception("无法获取设备分辨率")
+
 
 if __name__ == "__main__":
     check_adb_installed()
 
     # 解析命令行参数
     parser = argparse.ArgumentParser(description="Mitmproxy script")
-    parser.add_argument("-P", "--port", type=int, default=8080, help="Port to listen on")
+    parser.add_argument("-P", "--port", type=int, default=9000, help="Port to listen on")
     parser.add_argument("-H", "--host", type=str, default="0.0.0.0", help="Host to listen on")
-    parser.add_argument("-AI", "--adb-ip", type=str, help="IP and port for ADB wireless connection (e.g., 192.168.0.101:5555)")
+    parser.add_argument("-AI", "--adb-ip", type=str,
+                        help="IP and port for ADB wireless connection (e.g., 192.168.0.101:5555)")
+
     args = parser.parse_args()
 
-    # 如果指定了 ADB IP，进行无线调试连接
     if args.adb_ip:
         connect_adb_wireless(args.adb_ip)
+
+    check_adb_connected()
 
     # 运行mitmdump
     sys.argv = ["mitmdump", "-s", __file__, "--listen-host", args.host, "--listen-port", str(args.port)]
