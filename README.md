@@ -9,9 +9,15 @@
 图：
 ![位置1、2、3](doc/img/小猿口算_三点_批注.png)
 
-## 演示视频 :
-<video src="doc/demo.mp4"></video>
-<a href="doc/demo.mp4">视频链接</a>
+## 演示视频(一次启动之后自动) :
+
+
+
+https://github.com/user-attachments/assets/8699e1a4-18e6-4a11-8161-1965c9fed534
+
+
+
+<a href="doc/demo.mp4">完整视频链接</a>
 
 
 
