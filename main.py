@@ -14,7 +14,6 @@ from mitmproxy.tools.main import mitmdump
 # CONFIG
 is_game_ended = True
 WAITING_TIME = 12
-BASE_RESOLUTION = [1440, 2880]
 NEXT_BUTTON_COORDINATES = {
     # 进行下一场所要点击的按钮位置
     "next_1": [720, 2060],
@@ -45,7 +44,7 @@ def response(flow: http.HTTPFlow) -> None:
         # 结束对战
         is_game_ended = True
 
-    if "https://xyks.yuanfudao.com/leo-star/android/exercise/rank/list" in url:
+    elif "https://xyks.yuanfudao.com/leo-star/android/exercise/rank/list" in url:
         # 进入结算界面，并自动进行下一局
         threading.Timer(interval=5, function=next_round).start()
 
