@@ -14,12 +14,6 @@ from mitmproxy.tools.main import mitmdump
 # CONFIG
 is_game_ended = True
 WAITING_TIME = 12
-NEXT_BUTTON_COORDINATES = {
-    # 进行下一场所要点击的按钮位置
-    "next_1": [720, 2060],
-    "next_2": [1050, 2760],
-    "next_3": [950, 2420],
-}
 
 
 def response(flow: http.HTTPFlow) -> None:
@@ -46,7 +40,7 @@ def response(flow: http.HTTPFlow) -> None:
 
     elif "https://xyks.yuanfudao.com/leo-star/android/exercise/rank/list" in url:
         # 进入结算界面，并自动进行下一局
-        threading.Timer(interval=5, function=next_round).start()
+        threading.Timer(interval=4, function=next_round).start()
 
 
 def show_message_box(title, message):
@@ -69,9 +63,16 @@ def answer_input():
 
 
 def next_round():
-    next_commands = [f"input tap {NEXT_BUTTON_COORDINATES['next_1'][0]} {NEXT_BUTTON_COORDINATES['next_1'][1]}",
-                     f"input tap {NEXT_BUTTON_COORDINATES['next_2'][0]} {NEXT_BUTTON_COORDINATES['next_2'][1]}",
-                     f"input tap {NEXT_BUTTON_COORDINATES['next_3'][0]} {NEXT_BUTTON_COORDINATES['next_3'][1]}"]
+    current_resolution = get_device_resolution()
+    NEXT_BUTTON_COORDINATES = [
+        # 进行下一场所要点击的按钮位置
+        [0.5, 0.8],     # 450，1280
+        [0.72, 0.95],   # 665，1530
+        [0.64, 0.84],   # 580，1350
+    ]
+    next_commands = [f"input tap {NEXT_BUTTON_COORDINATES[0][0] * current_resolution[0]} {NEXT_BUTTON_COORDINATES[0][1] * current_resolution[1]}",
+                     f"input tap {NEXT_BUTTON_COORDINATES[1][0] * current_resolution[0]} {NEXT_BUTTON_COORDINATES[1][1] * current_resolution[1]}",
+                     f"input tap {NEXT_BUTTON_COORDINATES[2][0] * current_resolution[0]} {NEXT_BUTTON_COORDINATES[2][1] * current_resolution[1]}"]
 
     for i in range(next_commands.__len__()):
         subprocess.run(["adb", "shell"], input=next_commands[i], text=True, stdout=subprocess.PIPE,
@@ -134,7 +135,7 @@ if __name__ == "__main__":
 
     # 解析命令行参数
     parser = argparse.ArgumentParser(description="Mitmproxy script")
-    parser.add_argument("-P", "--port", type=int, default=9000, help="Port to listen on")
+    parser.add_argument("-P", "--port", type=int, default=8080, help="Port to listen on")
     parser.add_argument("-H", "--host", type=str, default="0.0.0.0", help="Host to listen on")
     parser.add_argument("-AI", "--adb-ip", type=str,
                         help="IP and port for ADB wireless connection (e.g., 192.168.0.101:5555)")
