@@ -12,7 +12,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-> [!CAUTION] 声明
+> [!CAUTION]
 >  
 > 本仓库仅供技术学习使用
 本项目作者及贡献者从未在任何平台通过任何形式售卖！ 且本项目禁止任何人在任何平台通过任何形式售卖！ 因售卖产生的所有违法行为与本仓库无关！
