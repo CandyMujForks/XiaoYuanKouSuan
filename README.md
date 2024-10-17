@@ -1,4 +1,5 @@
 # 小猿口算
+
 ![Language](https://img.shields.io/badge/language-python-blue?logo=python)
 ![Language](https://img.shields.io/badge/language-JavaScript-yellow?logo=JavaScript)
 ![Language](https://img.shields.io/badge/language-C++-white?logo=C)
@@ -10,6 +11,8 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+
+项目整合来源于[xmexg](https://github.com/xmexg/xyks)和[cr4n5](https://github.com/cr4n5/XiaoYuanKouSuan)有关问题的讨论
 
 > [!CAUTION]
 >  
