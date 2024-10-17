@@ -1,10 +1,10 @@
 # 小猿口算
 
-原作者：![Authorized By](https://github.com/liqiang-xxfy/xiaoyuankousuan-fiddler-autojs)
+原作者：[liqiang-xxfy](https://github.com/liqiang-xxfy/xiaoyuankousuan-fiddler-autojs)
 
-感谢提供的解决方案：![Thanks For Issue](https://github.com/cr4n5/XiaoYuanKouSuan/issues/113)
+感谢提供的解决方案：[Thanks For Issue](https://github.com/cr4n5/XiaoYuanKouSuan/issues/113)
 
-代码修改自：![Modified From Code](https://github.com/cr4n5/XiaoYuanKouSuan)
+代码修改自：[Modified From Code](https://github.com/cr4n5/XiaoYuanKouSuan)
 
 运行格式为：
 
