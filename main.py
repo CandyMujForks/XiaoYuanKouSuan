@@ -22,12 +22,9 @@ def response(flow: http.HTTPFlow) -> None:
     print(f"Response: {flow.response.status_code} {url}")
 
     if "https://leo.fbcontent.cn/bh5/leo-web-oral-pk/exercise_" in url:
-        # 找到需要替换的js
-        responsetext = flow.response.text
+        # 找到需要替换的目标
         print(f"匹配到指定的 URL: {url}")
-        funname = re.search(r"(?<=isRight:)[^,]*?\(.*?\).*?(?=\|)", responsetext).group()
-        flow.response.text = responsetext.replace(funname, f"{funname}||true")
-        threading.Thread(target=show_message_box, args=("过滤成功", f"函数 {funname} 替换成功!")).start()
+        handle_target_response(flow, url)
 
     elif "https://xyks.yuanfudao.com/leo-game-pk/android/math/pk/match/v2?" in url:
         # 检测到匹配成功
@@ -43,6 +40,51 @@ def response(flow: http.HTTPFlow) -> None:
         threading.Timer(interval=4, function=next_round).start()
 
 
+# ------------------------------------------------------------------------------------------------------
+# From @GalacticDevOps Link: https://github.com/cr4n5/XiaoYuanKouSuan/issues/113#issuecomment-2419413888
+
+def handle_target_response(flow, url):
+    print(f"匹配到指定的 URL: {url}")
+    responsetext = flow.response.text
+    update_response_text(flow, responsetext)
+
+
+def update_response_text(flow, responsetext):
+    # 1. 取消PK准备动画
+    text = re.sub(r'"readyGoEnd"\)}\),.{1,4}\)}\),.{1,4}\)}\),.{1,4}\)}\)',
+                  r'"readyGoEnd")}),20)}),20)}),20)})', responsetext)
+
+    # 2. case 0 替换
+    text = re.sub(r'case 0:if(.{0,14})\.challengeCode(.{200,300})([a-zA-Z]{1,2})\("startExercise"\);',
+                  r'case 0:\3("startExercise");if\1.challengeCode\2', text)
+
+    # 3. 判断任何答案正确
+    text = re.sub(r'return .{3,5}\)\?1:0},', r'return 1},', text)
+
+    # 4. 自动触发答题
+    text = re.sub(r'=function\(([a-zA-Z]{1,2}),([a-zA-Z]{1,2})\)\{([a-zA-Z]{1,2})&&\(([a-zA-Z]{1,2})\.value=',
+                  r"=function(\1,\2){\2({ recognizeResult: '', pathPoints: [[]], answer: 1, showReductionFraction: 0 });\3&&(\4.value=",
+                  text)
+
+    # 5. 直接判断所有答题完成
+    text = re.sub(r'\.value\+1>=[a-zA-Z]{1,2}\.value\.length\?([a-zA-Z]{1,2})\("finishExercise"\)',
+                  r'.value+1>=0?\1("finishExercise")', text)
+
+    # 6. 好友挑战PK修改时间为0.001
+    text = re.sub(r"correctCnt:(.{1,5}),costTime:(.{1,15}),updatedTime:(.{1,120})([a-zA-Z]{1,2})\.challengeCode",
+                  r"correctCnt:\1,costTime:\4.challengeCode?1:\2,updatedTime:\3\4.challengeCode", text)
+
+    # 7. 所有PK场次修改时间为0.001
+    text = re.sub(r"correctCnt:(.{1,5}),costTime:(.{1,15}),updatedTime:(.{1,120})([a-zA-Z]{1,2})\.challengeCode",
+                  r"correctCnt:\1,costTime:1,updatedTime:\3\4.challengeCode", text)
+
+    flow.response.text = text
+    print(f"替换后的响应: {text}")
+    threading.Thread(target=show_message_box, args=("过滤成功", f"替换成功!")).start()
+
+# ------------------------------------------------------------------------------------------------------
+
+
 def show_message_box(title, message):
     root = tk.Tk()
     root.withdraw()
@@ -56,7 +98,7 @@ def answer_input():
     # adb点击作答
     while True:
         if not is_game_ended:
-            adb_command = f"input tap {current_resolution[0] * 0.5} {current_resolution[1] * 0.7} \n" * 15
+            adb_command = f"input tap {current_resolution[0] * 0.5} {current_resolution[1] * 0.7} \n" * 5
             subprocess.run(["adb", "shell"], input=adb_command, text=True)
         else:
             return
