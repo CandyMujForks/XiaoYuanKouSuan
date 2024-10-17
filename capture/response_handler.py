@@ -7,6 +7,10 @@ import tkinter as tk
 from mitmproxy import http
 import config
 
+
+def is_target_url(url):
+    return re.search(r"leo\.fbcontent\.cn/bh5/leo-web-oral-pk/exercise_.*\.js", url)
+
 class ResponseHandler:
     def __init__(self):
         self.is_dialog_shown = False
@@ -19,15 +23,12 @@ class ResponseHandler:
         url = flow.request.url
         print(f"Response: {flow.response.status_code} {url}")
 
-        if self.is_target_url(url):
+        if is_target_url(url):
             self.handle_target_response(flow, url)
         elif "https://xyks.yuanfudao.com/leo-game-pk/android/math/pk/match/v2?" in url:
             if not self.is_dialog_shown:
                 self.is_dialog_shown = True
                 threading.Thread(target=self.gui_answer).start()
-
-    def is_target_url(self, url):
-        return re.search(r"leo\.fbcontent\.cn/bh5/leo-web-oral-pk/exercise_.*\.js", url)
 
     def handle_target_response(self, flow, url):
         print(f"匹配到指定的 URL: {url}")
