@@ -26,18 +26,18 @@ def response(flow: http.HTTPFlow) -> None:
         print(f"匹配到指定的 URL: {url}")
         handle_target_response(flow, url)
 
-    elif "https://xyks.yuanfudao.com/leo-game-pk/android/math/pk/match/v2?" in url:
-        # 检测到匹配成功
-        is_game_ended = False
-        threading.Timer(interval=WAITING_TIME, function=answer_input).start()
-
-    elif "https://xyks.yuanfudao.com/bh5/leo-web-oral-pk/result" in url:
-        # 结束对战
-        is_game_ended = True
-
+    # elif "https://xyks.yuanfudao.com/leo-game-pk/android/math/pk/match/v2?" in url:
+    #     # 检测到匹配成功
+    #     is_game_ended = False
+    #     threading.Timer(interval=WAITING_TIME, function=answer_input).start()
+    #
+    # elif "https://xyks.yuanfudao.com/bh5/leo-web-oral-pk/result" in url:
+    #     # 结束对战
+    #     is_game_ended = True
+    #
     elif "https://xyks.yuanfudao.com/leo-star/android/exercise/rank/list" in url:
         # 进入结算界面，并自动进行下一局
-        threading.Timer(interval=4, function=next_round).start()
+        threading.Timer(interval=3, function=next_round).start()
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -98,7 +98,7 @@ def answer_input():
     # adb点击作答
     while True:
         if not is_game_ended:
-            adb_command = f"input tap {current_resolution[0] * 0.5} {current_resolution[1] * 0.7} \n" * 5
+            adb_command = f"input tap {current_resolution[0] * 0.5} {current_resolution[1] * 0.7} \n" * 15
             subprocess.run(["adb", "shell"], input=adb_command, text=True)
         else:
             return
