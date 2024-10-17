@@ -10,13 +10,7 @@ import com.github.unidbg.arm.backend.BackendException;
 import com.github.unidbg.arm.context.Arm64RegisterContext;
 import com.github.unidbg.arm.context.RegisterContext;
 import com.github.unidbg.linux.android.dvm.apk.Apk;
-import com.github.unidbg.linux.android.dvm.array.ArrayObject;
-import com.github.unidbg.linux.android.dvm.array.ByteArray;
-import com.github.unidbg.linux.android.dvm.array.DoubleArray;
-import com.github.unidbg.linux.android.dvm.array.FloatArray;
-import com.github.unidbg.linux.android.dvm.array.IntArray;
-import com.github.unidbg.linux.android.dvm.array.PrimitiveArray;
-import com.github.unidbg.linux.android.dvm.array.ShortArray;
+import com.github.unidbg.linux.android.dvm.array.*;
 import com.github.unidbg.memory.SvcMemory;
 import com.github.unidbg.pointer.UnidbgPointer;
 import com.github.unidbg.utils.Inspector;
@@ -2839,7 +2833,16 @@ public class DalvikVM64 extends BaseVM implements VM {
         Pointer _GetCharArrayElements = svcMemory.registerSvc(new Arm64Svc() {
             @Override
             public long handle(Emulator<?> emulator) {
-                throw new UnsupportedOperationException();
+                RegisterContext context = emulator.getContext();
+                UnidbgPointer object = context.getPointerArg(1);
+                Pointer isCopy = context.getPointerArg(2);
+                CharArray array = getObject(object.toIntPeer());
+
+                if(log.isDebugEnabled()){
+                    log.debug("array={}, isCopy={}", array, isCopy);
+                }
+                return Objects.requireNonNull(array)._GetArrayCritical(emulator, isCopy).toIntPeer();
+//                throw new UnsupportedOperationException();
             }
         });
 

@@ -192,7 +192,9 @@ public class UnidbgPointer extends Pointer implements PointerArg {
 
     @Override
     public void write(long offset, char[] buf, int index, int length) {
-        throw new AbstractMethodError();
+        for (int i = index; i < length; i++) {
+            setChar((i - index) * 4L + offset, buf[i]);
+        }
     }
 
     @Override

@@ -25,6 +25,7 @@ dalvikvm -cp [编译的dex] com.fenbi.android.leo.imgsearch.sdk.utils.e [加密�
     public static byte[] b(byte[] data) {
         return c(data);  // 调用 native 库
     }
+    
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("传入命令行参数");
