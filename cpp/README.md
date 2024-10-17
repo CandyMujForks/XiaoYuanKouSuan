@@ -8,6 +8,7 @@
 
 推荐参考开源项目：
 ![AzurLaneAutoScript](https://github.com/LmeSzinc/AzurLaneAutoScript)
+![DroidCast_raw](https://github.com/Torther/DroidCast_raw)
 
 > [!CAUTION]
 >  
@@ -29,15 +30,3 @@
 6. 任何擅自改变计算机信息网络数据属于违法行为，本项目不提供成品可运行程序，仅做学习研究使用。
 
 `您使用或者复制了本仓库且本人制作的任何代码或项目，则视为已接受此声明，请仔细阅读。`
-
-[your-project-path]:/x781078959/XiaoYuanKouSuan
-[contributors-shield]: https://img.shields.io/github/contributors/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[contributors-url]: https://github.com/x781078959/XiaoYuanKouSuan/pulse
-[forks-shield]: https://img.shields.io/github/forks/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[forks-url]: https://github.com//x781078959/XiaoYuanKouSuan/network/members
-[stars-shield]: https://img.shields.io/github/stars/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[stars-url]: https://github.com/x781078959/XiaoYuanKouSuan/stargazers
-[issues-shield]: https://img.shields.io/github/issues/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[issues-url]: https://img.shields.io/github/issues/shaojintian/Best_README_template.svg
-[license-shield]: https://img.shields.io/github/license/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[license-url]: https://github.com/x781078959/XiaoYuanKouSuan/LICENSE
