@@ -1,7 +1,10 @@
 # 小猿口算
 
-![感谢此issue提供的解决方案](https://github.com/cr4n5/XiaoYuanKouSuan/issues/113)
-![Modified From Code](https://github.com/cr4n5/XiaoYuanKouSuan)
+原作者：![Authorized By](https://github.com/liqiang-xxfy/xiaoyuankousuan-fiddler-autojs)
+
+感谢提供的解决方案：![Thanks For Issue](https://github.com/cr4n5/XiaoYuanKouSuan/issues/113)
+
+代码修改自：![Modified From Code](https://github.com/cr4n5/XiaoYuanKouSuan)
 
 运行格式为：
 
@@ -40,15 +43,3 @@
 6. 任何擅自改变计算机信息网络数据属于违法行为，本项目不提供成品可运行程序，仅做学习研究使用。
 
 `您使用或者复制了本仓库且本人制作的任何代码或项目，则视为已接受此声明，请仔细阅读。`
-
-[your-project-path]:/x781078959/XiaoYuanKouSuan
-[contributors-shield]: https://img.shields.io/github/contributors/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[contributors-url]: https://github.com/x781078959/XiaoYuanKouSuan/pulse
-[forks-shield]: https://img.shields.io/github/forks/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[forks-url]: https://github.com//x781078959/XiaoYuanKouSuan/network/members
-[stars-shield]: https://img.shields.io/github/stars/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[stars-url]: https://github.com/x781078959/XiaoYuanKouSuan/stargazers
-[issues-shield]: https://img.shields.io/github/issues/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[issues-url]: https://img.shields.io/github/issues/shaojintian/Best_README_template.svg
-[license-shield]: https://img.shields.io/github/license/x781078959/XiaoYuanKouSuan.svg?style=flat-square
-[license-url]: https://github.com/x781078959/XiaoYuanKouSuan/LICENSE
