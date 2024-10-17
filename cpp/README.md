@@ -12,6 +12,8 @@
 
 [DroidCast_raw](https://github.com/Torther/DroidCast_raw)
 
+[minitouch](https://github.com/openstf/minitouch)
+
 > [!CAUTION]
 >  
 > <font size=5>注意!</font></br><font color=red>本仓库仅供技术学习使用

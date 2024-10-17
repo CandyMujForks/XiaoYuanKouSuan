@@ -12,7 +12,11 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-项目整合来源于[xmexg](https://github.com/xmexg/xyks)和[cr4n5](https://github.com/cr4n5/XiaoYuanKouSuan)有关问题的讨论
+> [!Note]
+> 
+> 项目整合来源于[xmexg](https://github.com/xmexg/xyks)和[cr4n5](https://github.com/cr4n5/XiaoYuanKouSuan)有关问题的讨论
+
+
 
 > [!CAUTION]
 >  
