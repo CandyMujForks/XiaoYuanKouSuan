@@ -7,8 +7,10 @@
 所以后续将研究并采用其他模拟方式
 
 推荐参考开源项目：
-![AzurLaneAutoScript](https://github.com/LmeSzinc/AzurLaneAutoScript)
-![DroidCast_raw](https://github.com/Torther/DroidCast_raw)
+
+[AzurLaneAutoScript](https://github.com/LmeSzinc/AzurLaneAutoScript)
+
+[DroidCast_raw](https://github.com/Torther/DroidCast_raw)
 
 > [!CAUTION]
 >  
