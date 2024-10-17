@@ -6,7 +6,7 @@ const iconv = require('iconv-lite');
 // 模拟的 Frida 脚本功能
 const getSign = async (path) => {
     // 这里应该是调用 Frida 获取签名的实际逻辑
-    return 'efed7a97012f5ab844730880d9520aed'; // 返回模拟的签名值
+    return '735a971e2b58125f995e3b2fb315dc96'; // 返回模拟的签名值
 };
 
 const decryptResponse = async (encodedContent) => {
